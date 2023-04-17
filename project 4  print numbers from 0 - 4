@@ -1,0 +1,13 @@
+//The setTimeout function works asynchronously, which means that it does not block the execution of the loop. Therefore, the loop completes all iterations before the first setTimeout function is executed.
+
+In addition, the variable i is declared with the var keyword, which creates a variable in the global scope. This means that all setTimeout functions will reference the same variable i which will have a final value of 5 at the end of the loop.
+
+//we can use for loop to print all of them! But we want them to print with a delay of n seconds where n is the current iteration for example in 1st iteration the delay is 0 seconds and in 2nd it’s 1 seconds and in 3rd it’s 2 seconds and so on..
+
+for (var i = 0; i < 5; i++) {
+  (function (j) {
+    setTimeout(function () {
+      console.log(j);
+    }, j * 1000);
+  })(i);
+}
