@@ -1,0 +1,34 @@
+//The query starts by selecting the required fields from the tables and performing necessary joins.
+The COALESCE function is used to return 0 in case the SUM of revenue or distance is NULL.
+The COUNT function is used to count the number of cabs that generated revenue and the total trips done by the user.
+The subquery is used to find the most active cab for each user. It selects the cab with the highest number of trips on the given date and returns its details in the required format. If there is no cab that ran on the given date, it returns 'N/A'.
+Finally, the results are grouped by user ID to get the summary for each user.
+
+SELECT 
+    u.name AS user_name,
+    COALESCE(SUM(t.amount), 0) AS revenue,
+    COALESCE(SUM(t.distance), 0) AS distance_travelled,
+    COUNT(DISTINCT CASE WHEN t.amount > 0 THEN c.id END) AS num_cabs_with_revenue,
+    COUNT(t.id) AS total_trips,
+    IFNULL((
+        SELECT 
+            CONCAT(c.regNumber, ' (', COUNT(t.id), ' trips)') 
+        FROM 
+            cabs c
+            JOIN trips t ON c.id = t.cabId
+        WHERE 
+            DATE(t.createdAt) = '2023-04-17'
+        GROUP BY 
+            c.id
+        ORDER BY 
+            COUNT(t.id) DESC
+        LIMIT 1
+    ), 'N/A') AS most_active_cab
+FROM 
+    users u
+    LEFT JOIN cabs c ON u.id = c.userId
+    LEFT JOIN trips t ON c.id = t.cabId
+WHERE 
+    DATE(t.createdAt) = '2023-04-17'
+GROUP BY 
+    u.id;
