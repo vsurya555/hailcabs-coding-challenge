@@ -1,0 +1,11 @@
+//Create a User model with necessary properties
+
+// src/user/user.model.ts
+
+export class User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
